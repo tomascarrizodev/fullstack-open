@@ -1,7 +1,7 @@
 import { useEffect } from "react"
 import personsService from "../../services/persons"
 
-const Persons = ({ filteredPersons, setFilteredPersons, persons }) => {
+const Persons = ({ filteredPersons, setFilteredPersons, setPersons, persons }) => {
   useEffect(() => {
     setFilteredPersons(persons)
   }, [persons])
@@ -10,9 +10,10 @@ const Persons = ({ filteredPersons, setFilteredPersons, persons }) => {
     if (window.confirm(`Delete "${name}"?`)) {
       personsService
         .erase(id)
-          .then(response => response)
+          .then(response => {
+            setPersons(persons.filter(person => person.name !== response.data.name))
+          })
           .catch(err => console.log(err))
-      setFilteredPersons(persons)
     }
   }
 

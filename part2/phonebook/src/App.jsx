@@ -9,18 +9,18 @@ const App = () => {
   const [newName, setNewName] = useState('')
   const [newNumber, setNewNumber] = useState('')
   const [filter, setFilter] = useState('')
-  const [filteredPersons, setFilteredPersons] = useState([])
+  const [filteredPersons, setFilteredPersons] = useState(persons)
 
   useEffect(() => {
     personsService
       .getAll()
-      .then(initialPersons => {
-        setPersons(initialPersons)
-      })
-      .catch(err => {
-        console.log(err)
-      })
-  }, [filteredPersons])
+        .then(initialPersons => {
+          setPersons(initialPersons)
+        })
+        .catch(err => {
+          console.log(err)
+        })
+  }, [])
 
   const handleChange = (e, func) => {
     const val = e.target.value
@@ -58,6 +58,7 @@ const App = () => {
       <Persons
         persons={persons}
         filteredPersons={filteredPersons}
+        setPersons={setPersons}
         setFilteredPersons={setFilteredPersons}
       />
 
