@@ -20,7 +20,7 @@ const App = () => {
       .catch(err => {
         console.log(err)
       })
-  }, [])
+  }, [filteredPersons])
 
   const handleChange = (e, func) => {
     const val = e.target.value

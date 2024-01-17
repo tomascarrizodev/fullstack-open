@@ -12,4 +12,9 @@ const create = async (newObject) => {
   return await request.then(response => response.data)
 }
 
-export default { getAll, create }
+const erase = async (id) => {
+  const request = axios.delete(`${baseUrl}/${id}`)
+  return await request.then(response => response)
+} 
+
+export default { getAll, create, erase }
