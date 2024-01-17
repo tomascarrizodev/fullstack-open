@@ -1,4 +1,4 @@
-import axios from "axios"
+import personsService from '../../services/persons'
 
 const PersonForm = (props) => {
 
@@ -20,15 +20,16 @@ const PersonForm = (props) => {
     }
 
     if (unique) {
-      setPersons([...newPersons, newPerson])
-      setFilteredPersons(newPersons)
-      setNewName('')
-      setNewNumber('')
-
-      axios
-        .post('http://localhost:3001/persons', newPerson)
-        .then(response => {
-          console.log(response)
+      personsService
+        .create(newPerson)
+        .then(returnedPerson => {
+          setPersons(persons.concat(returnedPerson))
+          setFilteredPersons(newPersons)
+          setNewName('')
+          setNewNumber('')
+        })
+        .catch(err => {
+          console.log(err)
         })
     }
   }
