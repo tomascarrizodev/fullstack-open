@@ -10,26 +10,52 @@ const App = () => {
   const [newNumber, setNewNumber] = useState('')
   const [filter, setFilter] = useState('')
   const [filteredPersons, setFilteredPersons] = useState(persons)
+  const [message, setMessage] = useState(false)
 
   useEffect(() => {
     personsService
       .getAll()
-        .then(initialPersons => {
-          setPersons(initialPersons)
-        })
-        .catch(err => {
-          console.log(err)
-        })
+      .then(initialPersons => {
+        setPersons(initialPersons)
+      })
+      .catch(err => {
+        console.log(err)
+      })
   }, [])
+
+  useEffect(() => {
+    setTimeout(() => {
+      setMessage(false)
+    }, 5000)
+    return () => false
+  }, [message])
 
   const handleChange = (e, func) => {
     const val = e.target.value
     func(val)
   }
 
+  const added = {
+    color: "green",
+    background: "lightgrey",
+    fontSize: "20px",
+    borderStyle: "solid",
+    borderRadius: "5px",
+    padding: "10px",
+    marginBottom: "10px",
+  }
+
   return (
     <div>
       <h2>Phonebook</h2>
+
+      {
+        message ?
+          <div style={added}>
+            Added {persons[persons.length - 1].name}
+          </div> :
+          null
+      }
 
       <Filter
         persons={persons}
@@ -46,6 +72,7 @@ const App = () => {
         persons={persons}
         newName={newName}
         newNumber={newNumber}
+        setMessage={setMessage}
         setNewName={setNewName}
         setNewNumber={setNewNumber}
         setPersons={setPersons}

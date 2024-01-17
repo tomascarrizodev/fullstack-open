@@ -2,7 +2,7 @@ import personsService from '../../services/persons'
 
 const PersonForm = (props) => {
 
-  const { persons, newName, setNewName, newNumber, setNewNumber, setPersons, setFilteredPersons, handleChange } = props
+  const { persons, newName, setNewName, newNumber, setNewNumber, setPersons, setFilteredPersons, handleChange, setMessage } = props
 
   const handleSubmit = (e) => {
     e.preventDefault()
@@ -36,6 +36,7 @@ const PersonForm = (props) => {
           setFilteredPersons(newPersons)
           setNewName('')
           setNewNumber('')
+          setMessage(true)
         })
         .catch(err => {
           console.log(err)
