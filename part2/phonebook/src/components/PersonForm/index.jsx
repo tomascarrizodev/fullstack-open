@@ -15,7 +15,16 @@ const PersonForm = (props) => {
     for (let i = 0; i < newPersons.length; i++) {
       if (newPersons[i].name === newName) {
         unique = false
-        alert(`${newName} is already in the phonebook`)
+        if (window.confirm(`"${newPersons[i].name}" is already added, replace the old number with a new number?`)) {
+          personsService
+            .update(newPersons[i].id, newPerson)
+            .then(returnedObject => {
+              setPersons(persons.map(person => person.id !== newPersons[i].id ? person : returnedObject))
+              setNewName('')
+              setNewNumber('')
+            })
+            .catch(err => console.log(err))
+        }
       }
     }
 
