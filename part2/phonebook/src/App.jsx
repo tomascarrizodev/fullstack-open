@@ -10,7 +10,9 @@ const App = () => {
   const [newNumber, setNewNumber] = useState('')
   const [filter, setFilter] = useState('')
   const [filteredPersons, setFilteredPersons] = useState(persons)
-  const [message, setMessage] = useState(false)
+  const [noti, setNoti] = useState(false)
+  const [message, setMessage] = useState('')
+  const [notiStyle, setNotiStyle] = useState({})
 
   useEffect(() => {
     personsService
@@ -25,17 +27,19 @@ const App = () => {
 
   useEffect(() => {
     setTimeout(() => {
-      setMessage(false)
+      setNoti(false)
+      setMessage('')
+      setNotiStyle({})
     }, 5000)
     return () => false
-  }, [message])
+  }, [noti])
 
   const handleChange = (e, func) => {
     const val = e.target.value
     func(val)
   }
 
-  const added = {
+  const notification = {
     color: "green",
     background: "lightgrey",
     fontSize: "20px",
@@ -45,14 +49,19 @@ const App = () => {
     marginBottom: "10px",
   }
 
+  const error = {
+    ...notification,
+    color: "red"
+  }
+
   return (
     <div>
       <h2>Phonebook</h2>
 
       {
-        message ?
-          <div style={added}>
-            Added {persons[persons.length - 1].name}
+        noti ?
+          <div style={notiStyle}>
+            {message}
           </div> :
           null
       }
@@ -70,14 +79,17 @@ const App = () => {
 
       <PersonForm
         persons={persons}
-        newName={newName}
-        newNumber={newNumber}
-        setMessage={setMessage}
-        setNewName={setNewName}
-        setNewNumber={setNewNumber}
         setPersons={setPersons}
+        newName={newName}
+        setNewName={setNewName}
+        newNumber={newNumber}
+        setNewNumber={setNewNumber}
         setFilteredPersons={setFilteredPersons}
         handleChange={handleChange}
+        setNoti={setNoti}
+        setMessage={setMessage}
+        notiStyles={{notification, error}}
+        setNotiStyle={setNotiStyle}
       />
 
       <h2>Numbers</h2>
@@ -87,6 +99,10 @@ const App = () => {
         filteredPersons={filteredPersons}
         setPersons={setPersons}
         setFilteredPersons={setFilteredPersons}
+        setNoti={setNoti}
+        setMessage={setMessage}
+        notiStyles={{notification, error}}
+        setNotiStyle={setNotiStyle}
       />
 
     </div>

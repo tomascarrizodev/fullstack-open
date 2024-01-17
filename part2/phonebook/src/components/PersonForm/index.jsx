@@ -2,7 +2,20 @@ import personsService from '../../services/persons'
 
 const PersonForm = (props) => {
 
-  const { persons, newName, setNewName, newNumber, setNewNumber, setPersons, setFilteredPersons, handleChange, setMessage } = props
+  const { 
+    persons, 
+    newName, 
+    setNewName, 
+    newNumber, 
+    setNewNumber, 
+    setPersons, 
+    setFilteredPersons, 
+    handleChange,
+    setNoti,
+    setMessage,
+    setNotiStyle,
+    notiStyles 
+  } = props
 
   const handleSubmit = (e) => {
     e.preventDefault()
@@ -22,8 +35,16 @@ const PersonForm = (props) => {
               setPersons(persons.map(person => person.id !== newPersons[i].id ? person : returnedObject))
               setNewName('')
               setNewNumber('')
+              setNoti(true)
+              setMessage(`Number changed for "${returnedObject.name}"`)
+              setNotiStyle(notiStyles.notification)
             })
-            .catch(err => console.log(err))
+            .catch(err => {
+              console.log(err)
+              setNoti(true)
+              setMessage(`Failed to change number for "${newPerson.name}"`)
+              setNotiStyle(notiStyles.error)
+            })
         }
       }
     }
@@ -36,10 +57,15 @@ const PersonForm = (props) => {
           setFilteredPersons(newPersons)
           setNewName('')
           setNewNumber('')
-          setMessage(true)
+          setNoti(true)
+          setMessage(`Added "${returnedPerson.name}"`)
+          setNotiStyle(notiStyles.notification)
         })
         .catch(err => {
           console.log(err)
+          setNoti(true)
+          setMessage(`Faild to add "${newPerson.name}" to phonebook`)
+          setNotiStyle(notiStyles.error)
         })
     }
   }
