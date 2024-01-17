@@ -1,3 +1,5 @@
+import axios from "axios"
+
 const PersonForm = (props) => {
 
   const { persons, newName, setNewName, newNumber, setNewNumber, setPersons, setFilteredPersons, handleChange } = props
@@ -6,20 +8,29 @@ const PersonForm = (props) => {
     e.preventDefault()
 
     const newPersons = [...persons]
-    const newPerson = { name: newName, number: newNumber, id: newPersons.length + 1 }
-    newPersons.push(newPerson)
+    const newPerson = { name: newName, number: newNumber, id: (newPersons.length + 1).toString() }
 
-    for (let i = 0; i < newPersons.length - 1; i++) {
+    let unique = true
+
+    for (let i = 0; i < newPersons.length; i++) {
       if (newPersons[i].name === newName) {
-        newPersons.pop()
+        unique = false
         alert(`${newName} is already in the phonebook`)
       }
     }
 
-    setPersons(newPersons)
-    setFilteredPersons(newPersons)
-    setNewName('')
-    setNewNumber('')
+    if (unique) {
+      setPersons([...newPersons, newPerson])
+      setFilteredPersons(newPersons)
+      setNewName('')
+      setNewNumber('')
+
+      axios
+        .post('http://localhost:3001/persons', newPerson)
+        .then(response => {
+          console.log(response)
+        })
+    }
   }
 
   return (
