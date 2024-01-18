@@ -1,12 +1,17 @@
 
 const Countries = (props) => {
-  const { filteredCountries } = props
+  const { filteredCountries, handleShow } = props
 
   return (
     <>
       {
         filteredCountries.map(country => {
-          return <p key={country}>{country.charAt(0).toUpperCase() + country.slice(1)}</p>
+          return (
+            <div key={country}>
+              <span>{country.charAt(0).toUpperCase() + country.slice(1)}</span>
+              <button onClick={() => handleShow(country)}>show</button>
+            </div>
+          )
         })
       }
     </>

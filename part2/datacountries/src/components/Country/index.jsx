@@ -1,7 +1,7 @@
 import countriesServices from '../../services'
 
 const Country = (props) => {
-  const { selectedCountry } = props
+  const { selectedCountry, setSelectedCountry, setShowCountry } = props
   const {
     name,
     capital,
@@ -14,6 +14,14 @@ const Country = (props) => {
 
   return (
     <>
+      <button 
+        onClick={() => {
+          setSelectedCountry(null)
+          setShowCountry(false)
+        }}
+      >
+        return
+      </button>
       <h2>{name.common}</h2>
       <p>capital: {capital[0]}</p>
       <p>area: {area}</p>

@@ -9,7 +9,7 @@ function App() {
   const [inputCountry, setInputCountry] = useState('')
   const [filteredCountries, setFilteredCountries] = useState([])
   const [selectedCountry, setSelectedCountry] = useState(null)
-  // const [limit, setLimit] = useState([0, 10])
+  const [showCountry, setShowCountry] = useState(false)
 
   useEffect(() => {
     countriesService
@@ -22,17 +22,15 @@ function App() {
       .catch(err => console.log(err))
   }, [])
 
-  useEffect(() => {
-    if (filteredCountries.length === 1) {
-      setSelectedCountry(...allCountries.filter(country => country.name.common.toLowerCase().includes(filteredCountries[0])))
-    }
-    return () => false
-  }, [filteredCountries])
-
   const handleChange = (e) => {
     const val = e.target.value.toLowerCase()
     setInputCountry(val)
     setFilteredCountries(allNames.filter(country => country.includes(val)))
+  }
+
+  const handleShow = (name) => {
+    setSelectedCountry(...allCountries.filter(country => country.name.common.toLowerCase().includes(name)))
+    setShowCountry(true)
   }
 
   return (
@@ -43,24 +41,33 @@ function App() {
         </div>
       </form>
       {
-        filteredCountries.length > 10 || filteredCountries.length === 250 ?
+        filteredCountries.length > 10 || filteredCountries.length === 250 && showCountry === false ?
           <p>Too many matches, specify another filter</p> : null
       }
       {
-        filteredCountries.length === 0 ?
+        filteredCountries.length === 0 && selectedCountry === null ?
           <p>No available countries</p> : null
       }
       {
-        allNames.length ?
-          null : <p>loading...</p>
+        allNames.length === 0 && selectedCountry === null ?
+        <p>loading...</p> : null 
       }
       {
-        filteredCountries.length <= 10 && filteredCountries.length > 0 && filteredCountries.length !== 1 ?
-          <Countries filteredCountries={filteredCountries} setFilteredCountries={setFilteredCountries} /> : null
+        filteredCountries.length <= 10 && filteredCountries.length > 0 && selectedCountry === null ?
+          <Countries 
+            filteredCountries={filteredCountries} 
+            handleShow={handleShow}
+          /> : 
+          null
       }
       {
-        filteredCountries.length === 1 && selectedCountry ?
-          <Country selectedCountry={selectedCountry} /> : null
+        selectedCountry ?
+          <Country 
+            selectedCountry={selectedCountry} 
+            setSelectedCountry={setSelectedCountry} 
+            setShowCountry={setShowCountry}
+          /> : 
+          null
       }
     </>
   )
