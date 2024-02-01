@@ -10,18 +10,24 @@ const Persons = ({ filteredPersons, setFilteredPersons, setPersons, persons, set
     if (window.confirm(`Delete "${name}"?`)) {
       personsService
         .erase(id)
-          .then(response => {
-            setPersons(persons.filter(person => person.name !== response.data.name))
-            setNoti(true)
-            setMessage(`Removed "${response.data.name}" from phonebook`)
-            setNotiStyle(notiStyles.notification)
-          })
-          .catch(err => {
-            console.log(err)
-            setNoti(true)
-            setMessage(`Information of "${name}" has already been removed from server. Please refresh the page`)
-            setNotiStyle(notiStyles.error)
-          })
+        .then(() => {
+          // setPersons(persons.filter(person => person.name !== response.data.name))
+          // Toggle for dev mode
+          personsService
+            .getAll()
+            .then(updatedPerson => {
+              setPersons(updatedPerson)
+            })
+          setNoti(true)
+          setMessage(`Removed "${name}" from phonebook`)
+          setNotiStyle(notiStyles.notification)
+        })
+        .catch(err => {
+          console.log(err)
+          setNoti(true)
+          setMessage(`Information of "${name}" has already been removed from server. Please refresh the page`)
+          setNotiStyle(notiStyles.error)
+        })
     }
   }
 
@@ -29,10 +35,10 @@ const Persons = ({ filteredPersons, setFilteredPersons, setPersons, persons, set
     <>
       {
         filteredPersons.length ?
-        filteredPersons.map(e => {
+          filteredPersons.map(e => {
             return (
               <div key={e.name}>
-                <span>{e.name} - {e.number}</span> 
+                <span>{e.name} - {e.number}</span>
                 <button onClick={() => handleDelete(e.id, e.name)}>delete</button>
               </div>
             )

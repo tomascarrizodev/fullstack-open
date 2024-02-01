@@ -42,7 +42,7 @@ const PersonForm = (props) => {
             .catch(err => {
               console.log(err)
               setNoti(true)
-              setMessage(`Failed to change number for "${newPerson.name}"`)
+              setMessage(err.response.data.error)
               setNotiStyle(notiStyles.error)
             })
         }
@@ -64,7 +64,7 @@ const PersonForm = (props) => {
         .catch(err => {
           console.log(err)
           setNoti(true)
-          setMessage(`Faild to add "${newPerson.name}" to phonebook`)
+          setMessage(err.response.data.error)
           setNotiStyle(notiStyles.error)
         })
     }

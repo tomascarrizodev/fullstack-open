@@ -1,6 +1,8 @@
 import axios from "axios";
 
-const baseUrl = 'http://localhost:3001/persons'
+// Toggle from 'http://localhost:3001/persons' for dev build 
+// to '/persons' for production build 
+const baseUrl = '/persons'
 
 const getAll = async () => {
   const request = axios.get(baseUrl)
