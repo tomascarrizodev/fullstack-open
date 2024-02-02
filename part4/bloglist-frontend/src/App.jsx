@@ -1,7 +1,9 @@
+/* eslint-disable linebreak-style */
 import { useState, useEffect } from 'react'
 import Blog from './components/Blog'
 import blogService from './services/blogs'
 import loginService from './services/login'
+import NewBlog from './components/NewBlog'
 
 const App = () => {
   const [blogs, setBlogs] = useState([])
@@ -13,6 +15,7 @@ const App = () => {
   const [url, setUrl] = useState('')
   const [notification, setNotification] = useState('')
   const [notiLogin, setNotiLogin] = useState('')
+  const [toggleNewBlog, setToggleNewBlog] = useState(true)
 
   useEffect(() => {
     blogService.getAll().then(blogs =>
@@ -55,7 +58,7 @@ const App = () => {
       setPassword('')
     } catch (error) {
       console.log({ error: error.message })
-      setNotiLogin(`wrogn username or password`)
+      setNotiLogin('wrong username or password')
     }
   }
 
@@ -87,8 +90,21 @@ const App = () => {
     }
   }
 
+  const handleDelete = async (id, title, author) => {
+    try {
+      if (window.confirm(`Are you sure you want to delete "${title}" by ${author}?`)) {
+        await blogService
+          .remove(id, user.token)
+        setBlogs(blogs.filter(blog => blog.id !== id))
+      }
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
   return (
     <div>
+      <h1>blogs</h1>
       {user === null
         ?
         <div>
@@ -105,34 +121,37 @@ const App = () => {
             <span>password</span>
             <input type='password' onChange={(e) => setPassword(e.target.value)} />
             <br />
-            <button>Log in</button>
+            <button type='submit'>Log in</button>
           </form>
         </div>
         :
         <div>
-          <p>{user.name} logged in</p>
+          <span>{user.name} logged in</span>
+          <button onClick={handleLogout}>logout</button>
           {notification &&
             <div style={{ background: 'gray', border: '2px solid limegreen', borderRadius: '8px', padding: '8px', color: 'limegreen' }}>
               {notification}
             </div>
           }
-          <button onClick={handleLogout}>logout</button>
-          <h2>create new</h2>
-          <form onSubmit={(e) => handleCreate(e)}>
-            <span>title</span>
-            <input type='text' value={title} onChange={(e) => setTitle(e.target.value)} />
-            <br />
-            <span>author</span>
-            <input type='text' value={author} onChange={(e) => setAuthor(e.target.value)} />
-            <br />
-            <span>url</span>
-            <input type='text' value={url} onChange={(e) => setUrl(e.target.value)} />
-            <br />
-            <button>create</button>
-          </form>
+          <br />
+          {
+            toggleNewBlog
+              ? <button onClick={() => setToggleNewBlog(!toggleNewBlog)}>new blog</button>
+              : <NewBlog handleCreate={handleCreate} toggleNewBlog={toggleNewBlog} setToggleNewBlog={setToggleNewBlog}>
+                <span>title</span>
+                <input type='text' value={title} onChange={(e) => setTitle(e.target.value)} />
+                <br />
+                <span>author</span>
+                <input type='text' value={author} onChange={(e) => setAuthor(e.target.value)} />
+                <br />
+                <span>url</span>
+                <input type='text' value={url} onChange={(e) => setUrl(e.target.value)} />
+                <br />
+              </NewBlog>
+          }
           <h2>blogs</h2>
-          {blogs.map(blog =>
-            <Blog key={blog.id} blog={blog} />
+          {blogs.sort((a, b) => b.likes - a.likes).map(blog =>
+            <Blog key={blog.id} blog={blog} token={user.token} handleDelete={handleDelete} user={user} />
           )}
         </div>
       }
